@@ -1,0 +1,234 @@
+<section class="users-edit">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <!-- Nav-tabs -->
+              <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav-tabs justify-content-left">
+                <li [ngbNavItem]="1">
+                  <a ngbNavLink class="nav-link d-flex align-items-center">
+                    <i class="ft-file mr-1"></i>
+                    <span class="d-none d-sm-block">Datos Generales</span>
+                  </a>
+                  <ng-template ngbNavContent>
+                    <!-- Account content starts -->
+                    <div class="mt-2" id="account" *ngIf="this.corporativo">
+                      <!-- Media object starts -->
+                      <div class="media">
+                        <img [src]="this.corporativo?.S_LogoURL" alt="user edit avatar"
+                          class="mr-3" width="120">
+                        <div class="media-body">
+                          <h4>{{this.corporativo?.S_NombreCorto}}</h4>
+                        </div>
+                      </div>
+                      <!-- Media object ends -->
+  
+                      <!-- Account form starts -->
+                      <form  [formGroup]="formDatosGenerales">
+                        <div class="row">
+                          <div class="col-3">
+                            <div class="form-group">
+                              <div class="controls">
+                                <label>Nombre Corto</label>
+                                <input type="text" class="form-control" formControlName="NombreCorto">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group">
+                              <div class="controls">
+                                <label>Nombre Completo</label>
+                                <input type="text" class="form-control" formControlName="NombreCompleto">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="form-group">
+                              <div class="controls">
+                                <label>Status *</label>
+                                <select class="form-control" formControlName="Status">
+                                  <option value="">Selecione</option>
+                                  <option value="1">Activo</option>
+                                  <option value="0">Inactivo</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="form-group">
+                                <label>Fecha de Incorporación *</label>
+                                <div class="input-group">
+                                  <input class="form-control" placeholder="yyyy-mm-dd" name="dp" formControlName="FechaIncorporacion" ngbDatepicker
+                                    #d2="ngbDatepicker">
+                                  <div class="input-group-append">
+                                    <div class="input-group-text" (click)="d2.toggle()">
+                                      <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="form-group">
+                              <div class="controls">
+                                <label>Url del Sistema *</label>
+                                <input type="text" class="form-control" formControlName="UrlSistema">
+                              </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-3 mt-sm-2" *ngIf="!this.editar">
+                            <button type="button"  class="btn btn-primary mb-2 mb-sm-0 mr-sm-2" routerLink="/corporativos">Regresar</button>
+                            <button type="button" class="btn btn-secondary" (click)="editarDatosGenerales()">Editar</button>
+                          </div>
+                          <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-3 mt-sm-2" *ngIf="this.editar">
+                            <button type="button"  class="btn btn-secondary mb-2 mb-sm-0 mr-sm-2" (click)="cancelarEdicion()">Cancelar</button>
+                            <button type="button" class="btn btn-primary" (click)="guardarCambios()">Guardar Cambios</button>
+                          </div>
+                        </div>
+                      </form>
+                      <!-- Account form ends -->
+                    </div>
+                    <!-- Account content ends -->
+                  </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                  <a ngbNavLink class="nav-link d-flex align-items-center">
+                    <i class="ft-users mr-1"></i>
+                    <span class="d-none d-sm-block">Contactos</span>
+                  </a>
+                  <ng-template ngbNavContent>
+                    <!-- Information content starts -->
+                    <div class="mt-2" id="information">
+                      <!-- Information form starts -->
+                      <div class="row">
+                        <div class="col-12 users-module">
+                            <div class="table-responsive">
+                              <table class="table mb-0 mt-3">
+                                <thead>
+                                  <tr>
+                                    <th>Nombre</th>
+                                    <th>Puesto</th>
+                                    <th>Teléfono</th>
+                                    <th>Celular</th>
+                                    <th>Email</th>
+                                    <th>Observaciones</th>
+                                    <th>Acciones</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                 <tr *ngFor="let item of this.contactos">
+                                    <td>{{item.S_Nombre}}</td>
+                                    <td>{{item.S_Puesto}}</td>
+                                    <td>{{item.N_TelefonoFijo}}</td>
+                                    <td>{{item.N_TelefonoMovil}}</td>
+                                    <td>{{item.S_Email}}</td>
+                                    <td>{{item.S_Comentarios}}</td>
+                                    <td>
+    
+    
+                                            <i (click)="editarContacto(item)" class="ft-edit text-secondary cursor-pointer fa-2x"></i>
+                                            <i (click)="confirmarEliminarContacto(item)" class="ft-trash text-primary cursor-pointer fa-2x"></i>
+                                    </td>
+                                 </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                      </div>
+                     
+      
+                      <div class="row">
+                          <div class="col-12">
+                            <form  [formGroup]="formContacto">
+                                <div class="row">
+                                  <div class="col-3">
+                                    <div class="form-group">
+                                      <div class="controls">
+                                        <label>Nombre</label>
+                                        <input type="text" maxlength="120" class="form-control" formControlName="S_Nombre">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-3">
+                                    <div class="form-group">
+                                      <div class="controls">
+                                        <label>Puesto</label>
+                                        <input type="text" maxlength="250" class="form-control" formControlName="S_Puesto">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-6">
+                                    <div class="form-group">
+                                      <div class="controls">
+                                        <label>Comentarios</label>
+                                        <input type="text" maxlength="4000" class="form-control" formControlName="S_Comentarios">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-3">
+                                    <div class="form-group">
+                                      <div class="controls">
+                                        <label>Teléfono Fijo</label>
+                                        <input type="text" maxlength="15" onlyNumber class="form-control" formControlName="N_TelefonoFijo">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-3">
+                                    <div class="form-group">
+                                      <div class="controls">
+                                        <label>Teléfono Móvil</label>
+                                        <input type="text" maxlength="15" onlyNumber class="form-control" formControlName="N_TelefonoMovil">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-5">
+                                    <div class="form-group">
+                                      <div class="controls">
+                                        <label>Email</label>
+                                        <input type="email" class="form-control" formControlName="S_Email">
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="col-12" *ngIf="this.formContacto.touched">
+                                    <ngb-alert 
+                                    type="light-danger"
+                                    [ngClass]="{
+                                        'bg-light-success mb-2': this.formContacto.valid,
+                                        'bg-light-danger mb-2': !this.formContacto.valid
+                                      }" 
+                                    class=" " 
+                                    [dismissible]="false">
+                                        {{
+                                            this.formContacto.valid ? 'Datos completos' : 'Datos incompletos'
+                                        }}
+                                      </ngb-alert>
+                                  </div>
+          
+                                  <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-3 mt-sm-2">
+                                    <button type="button"  class="btn btn-primary mb-2 mb-sm-0 mr-sm-2" (click)="cancelarContacto()">Cancelar</button>
+                                    <button type="button" class="btn btn-secondary" (click)="guardarContacto()">{{nombreBotonGuardar}}</button>
+                                  </div>
+                                </div>
+                              </form>
+                          </div>
+
+                      </div>
+                      <!-- Information form ends -->
+                    </div>
+                    <!-- Information content ends -->
+                  </ng-template>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div [ngbNavOutlet]="nav"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
